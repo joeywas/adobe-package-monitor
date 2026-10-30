@@ -1,0 +1,19 @@
+name = "adobe-package-monitor"
+main = "src/worker.js"
+compatibility_date = "2026-10-29"
+
+[vars]
+CF2023_SNAPSHOT_TIMESTAMP = "2026-10-15T08:30:37.699Z"
+CF2025_SNAPSHOT_TIMESTAMP = "2026-10-20T03:00:22.398Z"
+
+[triggers]
+crons = ["*/30 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "adobe-package-monitor-db"
+database_id = "7ad6dae6-970a-4dad-b998-db3f5d5f5046"
+
+[[previews.d1_databases]]
+binding = "DB"
+database_id = "7ad6dae6-970a-4dad-b998-db3f5d5f5046"
