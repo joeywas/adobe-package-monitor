@@ -147,3 +147,12 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# suggested from chatgpt for ignoring environment variable files and other cloudflare
+# related files
+.dev.vars
+.env
+.env.*
+node_modules/
+.wrangler/
+.DS_Store

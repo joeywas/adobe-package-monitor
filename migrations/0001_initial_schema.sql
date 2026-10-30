@@ -1,0 +1,11 @@
+CREATE INDEX idx_changes_bundle ON changes(bundle)
+CREATE INDEX idx_changes_detected_at ON changes(detected_at)
+CREATE INDEX idx_changes_version_detected ON changes(version, detected_at)
+CREATE INDEX idx_check_runs_started_at ON check_runs(started_at)
+CREATE INDEX idx_check_runs_version_id ON check_runs(version, id DESC)
+CREATE INDEX idx_snapshots_version_id ON snapshots(version, id DESC)
+CREATE TABLE _cf_KV ( key TEXT PRIMARY KEY, value BLOB ) WITHOUT ROWID
+CREATE TABLE changes ( id INTEGER PRIMARY KEY AUTOINCREMENT, detected_at TEXT NOT NULL, change_type TEXT NOT NULL, item_type TEXT NOT NULL, bundle TEXT NOT NULL, bundle_version TEXT, item_name TEXT, old_version TEXT, new_version TEXT, old_metadata TEXT, new_metadata TEXT, details TEXT , version TEXT NOT NULL DEFAULT 'cf2023')
+CREATE TABLE check_runs ( id INTEGER PRIMARY KEY AUTOINCREMENT, started_at TEXT NOT NULL, finished_at TEXT, status TEXT NOT NULL, bundles_found INTEGER, changes_found INTEGER, error_message TEXT , version TEXT NOT NULL DEFAULT 'cf2023')
+CREATE TABLE snapshots ( id INTEGER PRIMARY KEY AUTOINCREMENT, checked_at TEXT NOT NULL, content_hash TEXT NOT NULL, raw_json TEXT NOT NULL , version TEXT NOT NULL DEFAULT 'cf2023')
+CREATE TABLE sqlite_sequence(name,seq)
