@@ -13,3 +13,7 @@ crons = ["*/30 * * * *"]
 binding = "DB"
 database_name = "adobe-package-monitor-db"
 database_id = "7ad6dae6-970a-4dad-b998-db3f5d5f5046"
+
+[[previews.d1_databases]]
+binding = "DB"
+database_id = "7ad6dae6-970a-4dad-b998-db3f5d5f5046"
