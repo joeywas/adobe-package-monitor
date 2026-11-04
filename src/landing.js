@@ -189,7 +189,7 @@ export function landingPage() {
 
   <footer>
     Timestamps are displayed in your browser's local time.
-    Timestamps automatically refresh every 60 seconds.
+    <a href="https://github.com/joeywas/adobe-package-monitor" target="_blank" rel="noopener">Source</a>
   </footer>
   <script>
   async function loadSnapshotTime(version) {
