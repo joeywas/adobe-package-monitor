@@ -413,7 +413,7 @@ pre {
   </div>
 
   <p class="footer-note">
-    The dashboard requests the most recent 200 change records from the API.
+    The dashboard requests the 50 most recent detection events from the API.
     Search and filters apply to those records.
   </p>
 </section>
@@ -973,14 +973,9 @@ async function load() {
     "Loading check history...";
 
   try {
-    const itemType = document.getElementById("itemType").value;
-    const changeType = document.getElementById("changeType").value;
-
     const changesPath =
       "/api/changes?version=" + encodeURIComponent(cfVersion) +
-      "&limit=200" +
-      "&item_type=" + encodeURIComponent(itemType) +
-      "&type=" + encodeURIComponent(changeType);
+      "&limit=50";
 
     const results = await Promise.all([
       getJson("/api/status?version=" + encodeURIComponent(cfVersion)),
@@ -1019,8 +1014,8 @@ async function load() {
   }
 }
 
-document.getElementById("itemType").addEventListener("change", load);
-document.getElementById("changeType").addEventListener("change", load);
+document.getElementById("itemType").addEventListener("change", renderChanges);
+document.getElementById("changeType").addEventListener("change", renderChanges);
 
 document.getElementById("search").addEventListener("input", renderChanges);
 
@@ -1032,11 +1027,6 @@ document.getElementById("clearFilters").addEventListener("click", function () {
 });
 
 load();
-
-// Refresh the dashboard every 60 seconds.
-setInterval(function () {
-  load();
-}, 60000);
 </script>
 </body>
 </html>`;

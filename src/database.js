@@ -119,7 +119,7 @@ export async function recentChanges(
         FROM changes
         WHERE version = ?
         GROUP BY detected_at
-        ORDER BY MAX(id) DESC
+        ORDER BY detected_at DESC
         LIMIT ?
       )
     ORDER BY id DESC
