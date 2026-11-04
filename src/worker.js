@@ -16,7 +16,7 @@ export default {
 
     const scheduledAt = new Date(controller.scheduledTime);
 
-    // The existing 30-minute trigger runs cleanup at midnight UTC.
+    // The existing 60-minute trigger runs cleanup at midnight UTC.
     const shouldCleanUp =
       scheduledAt.getUTCHours() === 0 &&
       scheduledAt.getUTCMinutes() === 0;

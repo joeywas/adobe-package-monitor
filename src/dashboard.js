@@ -327,9 +327,8 @@ pre {
   <div>
     <h1>Adobe ColdFusion Bundle Monitor</h1>
     <p class="muted">
-      Created thanks to consternation and frustration with Adobe.<br>
-      Fueled by coffee-flavored tears of Coldfusion admins.<br>
       Times are shown in your browser's local time zone.<br>
+      <a href="https://github.com/joeywas/adobe-package-monitor" target="_blank" rel="noopener">Source code</a>
     </p>
     <hr>
   </div>
