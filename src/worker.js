@@ -2,6 +2,7 @@ import { SOURCES } from "./config.js";
 import { runCheck } from "./monitor.js";
 import { dashboard } from "./dashboard.js";
 import { landingPage } from "./landing.js";
+import { releaseLink } from "./release.js";
 import { responseJson } from "./responses.js";
 import {
   status,
@@ -102,7 +103,7 @@ export default {
       }
 
       if (url.pathname === "/") {
-        return new Response(landingPage(), {
+        return new Response(landingPage(releaseLink(env.APP_VERSION)), {
           headers: {
             "Content-Type": "text/html; charset=utf-8",
             "Cache-Control": "no-store",
@@ -116,7 +117,7 @@ export default {
         url.pathname === "/cf2025" ||
         url.pathname === "/cf2025/"
       ) {
-        return new Response(dashboard(), {
+        return new Response(dashboard(releaseLink(env.APP_VERSION)), {
           headers: {
             "Content-Type": "text/html; charset=utf-8",
             "Cache-Control": "no-store",

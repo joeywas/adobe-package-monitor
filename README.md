@@ -96,6 +96,7 @@ Required runtime config:
 
 - `CF2023_SNAPSHOT_TIMESTAMP`
 - `CF2025_SNAPSHOT_TIMESTAMP`
+- `APP_VERSION` for the release shown in the page footer
 - `MANUAL_CHECK_TOKEN` as a secret
 
 You can set the snapshot pin values in `wrangler.toml` under `[vars]`, and set the manual-check secret with:
@@ -103,6 +104,25 @@ You can set the snapshot pin values in `wrangler.toml` under `[vars]`, and set t
 ```bash
 wrangler secret put MANUAL_CHECK_TOKEN
 ```
+
+Update `APP_VERSION` in `wrangler.toml` to the release tag (for example,
+`v1.2.0`) before deploying a release. The footer links that tag to its GitHub
+release page. When `APP_VERSION` is `unreleased`, the link points to the
+repository's releases page.
+
+### Automated GitHub releases
+
+The `Release` GitHub Actions workflow runs when commits are pushed to `main`.
+It uses Conventional Commit messages to determine whether to create a release:
+
+- `fix: ...` creates a patch release.
+- `feat: ...` creates a minor release.
+- A commit with `BREAKING CHANGE:` in its footer creates a major release.
+
+For squash merges, use a Conventional Commit pull request title so the squash
+commit has the correct format. The workflow uses `GITHUB_TOKEN`; ensure the
+repository allows Actions to have read and write access to contents under
+Settings > Actions > General > Workflow permissions.
 
 ### Deploy
 
