@@ -114,10 +114,17 @@ export async function recentChanges(
     SELECT *
     FROM changes
     WHERE version = ?
+      AND detected_at IN (
+        SELECT detected_at
+        FROM changes
+        WHERE version = ?
+        GROUP BY detected_at
+        ORDER BY MAX(id) DESC
+        LIMIT ?
+      )
     ORDER BY id DESC
-    LIMIT ?
   `)
-    .bind(version, limit)
+    .bind(version, version, limit)
     .all();
 
   return result.results;
