@@ -188,7 +188,7 @@ export function landingPage(releaseVersionLink) {
   </main>
 
   <footer>
-    Timestamps are displayed in your browser's local time.
+    Timestamps are displayed in UTC (Zulu time).
     Release ${releaseVersionLink || "unreleased"}.
     <a href="https://github.com/joeywas/adobe-package-monitor" target="_blank" rel="noopener">Source</a>
   </footer>
@@ -277,7 +277,7 @@ export function landingPage(releaseVersionLink) {
         }
       }
 
-      timeElement.textContent = date.toLocaleString();
+      timeElement.textContent = date.toISOString();
       timeElement.dateTime = date.toISOString();
 
       versionElement.textContent =
