@@ -412,7 +412,7 @@ pre {
   </div>
 
   <p class="footer-note">
-    The dashboard requests the 50 most recent detection events from the API.
+    The dashboard requests the 20 most recent detection events from the API.
     Search and filters apply to those records.
   </p>
 </section>
@@ -974,7 +974,7 @@ async function load() {
   try {
     const changesPath =
       "/api/changes?version=" + encodeURIComponent(cfVersion) +
-      "&limit=25";
+      "&limit=20";
 
     const results = await Promise.all([
       getJson("/api/status?version=" + encodeURIComponent(cfVersion)),
