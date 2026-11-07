@@ -106,25 +106,18 @@ export async function recentChanges(
   version = "cf2023"
 ) {
   const limit = Math.min(
-    500,
-    Math.max(1, Number(url.searchParams.get("limit")) || 100)
+    25,
+    Math.max(1, Number(url.searchParams.get("limit")) || 25)
   );
 
   const result = await env.DB.prepare(`
     SELECT *
     FROM changes
     WHERE version = ?
-      AND detected_at IN (
-        SELECT detected_at
-        FROM changes
-        WHERE version = ?
-        GROUP BY detected_at
-        ORDER BY detected_at DESC
-        LIMIT ?
-      )
     ORDER BY id DESC
+    LIMIT ?
   `)
-    .bind(version, version, limit)
+    .bind(version, limit)
     .all();
 
   return result.results;

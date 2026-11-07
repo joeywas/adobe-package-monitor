@@ -161,7 +161,7 @@ These return the selected snapshot for that version. The response also sets an `
 ### JSON APIs
 
 - `GET /api/status?version=cf2023` - latest stats for a version
-- `GET /api/changes?version=cf2023&limit=100` - recent detected changes
+- `GET /api/changes?version=cf2023&limit=25` - up to the 25 most recent detected changes
 - `GET /api/checks?version=cf2023` - recent check-run history
 - `POST /api/run-check` - manual run check endpoint, protected by `Authorization: Bearer <MANUAL_CHECK_TOKEN>`
 

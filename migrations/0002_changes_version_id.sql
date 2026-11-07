@@ -1,0 +1,1 @@
+CREATE INDEX idx_changes_version_id ON changes(version, id DESC);
