@@ -335,7 +335,7 @@ footer {
   <div>
     <h1>Adobe ColdFusion Bundle Monitor</h1>
     <p class="muted">
-      Times are shown in your browser's local time zone.<br>
+      Times are shown in UTC (Zulu time).<br>
       <a href="https://github.com/joeywas/adobe-package-monitor" target="_blank" rel="noopener">Source code</a>
     </p>
     <hr>
@@ -486,7 +486,7 @@ function formatDate(value) {
     return String(value);
   }
 
-  return date.toLocaleString();
+  return date.toISOString();
 }
 
 function readableChange(value) {
@@ -1035,7 +1035,7 @@ document.getElementById("clearFilters").addEventListener("click", function () {
 
 load();
 </script>
-<footer>Release ${releaseVersionLink || "unreleased"}.</footer>
+<footer><a href="https://github.com/joeywas/adobe-package-monitor" target="_blank" rel="noopener">Source code</a></footer>
 </body>
 </html>`;
 }
