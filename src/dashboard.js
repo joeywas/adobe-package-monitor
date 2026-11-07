@@ -974,7 +974,7 @@ async function load() {
   try {
     const changesPath =
       "/api/changes?version=" + encodeURIComponent(cfVersion) +
-      "&limit=50";
+      "&limit=25";
 
     const results = await Promise.all([
       getJson("/api/status?version=" + encodeURIComponent(cfVersion)),
