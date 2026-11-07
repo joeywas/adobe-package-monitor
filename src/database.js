@@ -171,6 +171,12 @@ export async function cleanupOldData(env, now = new Date()) {
       FROM snapshots s1
       WHERE s1.version = s.version
     )
+    OR EXISTS (
+      SELECT 1
+      FROM changes c
+      WHERE c.version = s.version
+        AND c.detected_at = s.checked_at
+    )
     OR (
       s.version = 'cf2023'
       AND ? IS NOT NULL
@@ -183,28 +189,7 @@ export async function cleanupOldData(env, now = new Date()) {
     )
   `;
 
-  // Delete change records associated with snapshots that will
-  // not be retained. This preserves removal history for every
-  // snapshot that remains available.
-  const changesResult = await env.DB.prepare(
-    `DELETE FROM changes
-     WHERE NOT EXISTS (
-       SELECT 1
-       FROM snapshots s
-       WHERE s.version = changes.version
-         AND s.checked_at = changes.detected_at
-         AND (${protectedSnapshot})
-     )`
-  ).bind(
-    cutoff,
-    pinnedCf2023,
-    pinnedCf2023,
-    pinnedCf2025,
-    pinnedCf2025
-  ).run();
-
-  // Delete old snapshots except the initial, latest, recent,
-  // and timestamp-pinned snapshots.
+  // Change rows are the event history, so retain them and their snapshots.
   const snapshotsResult = await env.DB.prepare(
     `DELETE FROM snapshots AS s
      WHERE NOT (${protectedSnapshot})`
@@ -216,18 +201,35 @@ export async function cleanupOldData(env, now = new Date()) {
     pinnedCf2025
   ).run();
 
-  // Keep only the last seven days of check-run history.
+  // Delete old check runs unless they record a change or pinned snapshot.
   const checksResult = await env.DB.prepare(
-    `DELETE FROM check_runs
-     WHERE started_at < ?`
-  ).bind(cutoff).run();
+    `DELETE FROM check_runs AS r
+     WHERE r.started_at < ?
+       AND NOT EXISTS (
+         SELECT 1
+         FROM changes c
+         WHERE c.version = r.version
+           AND c.detected_at = r.finished_at
+       )
+       AND NOT (
+         (r.version = 'cf2023' AND ? IS NOT NULL AND r.finished_at = ?)
+         OR
+         (r.version = 'cf2025' AND ? IS NOT NULL AND r.finished_at = ?)
+       )`
+  ).bind(
+    cutoff,
+    pinnedCf2023,
+    pinnedCf2023,
+    pinnedCf2025,
+    pinnedCf2025
+  ).run();
 
   const summary = {
     event: "database_cleanup",
     completed_at: now.toISOString(),
     retention_days: retentionDays,
     cutoff,
-    changes_deleted: changesResult.meta.changes,
+    changes_deleted: 0,
     snapshots_deleted: snapshotsResult.meta.changes,
     check_runs_deleted: checksResult.meta.changes,
   };

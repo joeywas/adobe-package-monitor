@@ -25,7 +25,7 @@ This project monitors Adobe ColdFusion package metadata published by Adobe for C
 The Worker entrypoint is in `src/worker.js` and does two main jobs:
 
 1. Scheduled execution
-   - Runs every 60 minutes using the cron trigger in `wrangler.toml`.
+   - Runs every 2 hours using the cron trigger in `wrangler.toml`.
    - Calls `runCheck()` for each supported version.
    - Performs a nightly cleanup at midnight UTC.
 
@@ -114,7 +114,7 @@ wrangler deploy
 
 ### Scheduled checks
 
-The worker runs every 30 minutes through the cron trigger:
+The worker runs every 2 hours through the cron trigger:
 
 ```toml
 [triggers]
@@ -131,12 +131,12 @@ Each run:
 
 ### Cleanup
 
-The database cleanup runs at midnight UTC. It removes stale snapshot/change data but keeps:
+The database cleanup runs at midnight UTC. It prunes stale snapshots and check-run rows while keeping:
 
-- very recent records
-- the earliest snapshot for each version
-- the latest snapshot for each version
-- pinned snapshot timestamps configured via environment variables
+- recent, earliest, latest, and explicitly pinned snapshots
+- every snapshot associated with a detected change
+- all change-event records and their matching check runs
+- check runs matching explicitly pinned snapshot timestamps
 
 ## API and routes
 
