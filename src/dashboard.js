@@ -1,4 +1,4 @@
-function dashboard() {
+function dashboard(releaseVersionLink) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -286,6 +286,14 @@ pre {
 .message {
   min-height: 24px;
   margin: 12px 0;
+}
+
+footer {
+  border-top: 1px solid #d0d5dd;
+  color: #667085;
+  font-size: 0.9rem;
+  margin-top: 28px;
+  padding-top: 16px;
 }
 
 .footer-note {
@@ -1027,6 +1035,7 @@ document.getElementById("clearFilters").addEventListener("click", function () {
 
 load();
 </script>
+<footer>Release ${releaseVersionLink || "unreleased"}.</footer>
 </body>
 </html>`;
 }
