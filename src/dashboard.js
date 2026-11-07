@@ -336,7 +336,6 @@ footer {
     <h1>Adobe ColdFusion Bundle Monitor</h1>
     <p class="muted">
       Times are shown in UTC (Zulu time).<br>
-      <a href="https://github.com/joeywas/adobe-package-monitor" target="_blank" rel="noopener">Source code</a>
     </p>
     <hr>
   </div>
