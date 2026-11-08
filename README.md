@@ -17,7 +17,7 @@ This project monitors Adobe ColdFusion package metadata published by Adobe for C
   - snapshot history for each version
   - change records for each detected difference
   - check-run results and errors
-- Keeps a rolling retention window for old data while preserving the earliest and newest snapshots and any explicitly pinned timestamps.
+- Keeps a rolling retention window for old data while preserving the earliest and newest snapshots, explicitly pinned timestamps, and snapshots for the 20 most recent detection events per version.
 - Serves a browser dashboard and JSON endpoints for each monitored version.
 
 ## How it works
@@ -154,7 +154,7 @@ Each run:
 The database cleanup runs at midnight UTC. It prunes stale snapshots and check-run rows while keeping:
 
 - recent, earliest, latest, and explicitly pinned snapshots
-- every snapshot associated with a detected change
+- snapshots associated with the 20 most recent detection events per version
 - all change-event records and their matching check runs
 - check runs matching explicitly pinned snapshot timestamps
 
@@ -183,6 +183,7 @@ These return the selected snapshot for that version. The response also sets an `
 - `GET /api/status?version=cf2023` - latest stats for a version
 - `GET /api/changes?version=cf2023&limit=25` - up to the 25 most recent detected changes
 - `GET /api/checks?version=cf2023` - recent check-run history
+- `GET /api/snapshot?version=cf2023&detected_at=<timestamp>` - the JSON snapshot for a detection event
 - `POST /api/run-check` - manual run check endpoint, protected by `Authorization: Bearer <MANUAL_CHECK_TOKEN>`
 
 Example:
