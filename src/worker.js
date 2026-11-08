@@ -146,6 +146,39 @@ export default {
         return responseJson(await recentChecks(env, version));
       }
 
+      if (url.pathname === "/api/snapshot") {
+        const detectedAt = url.searchParams.get("detected_at");
+
+        if (!detectedAt) {
+          return responseJson(
+            { error: "Missing detected_at parameter" },
+            400
+          );
+        }
+
+        const snapshot = await env.DB.prepare(
+          `SELECT checked_at, raw_json
+           FROM snapshots
+           WHERE version = ?
+             AND checked_at = ?
+           ORDER BY id DESC
+           LIMIT 1`
+        ).bind(version, detectedAt).first();
+
+        if (!snapshot) {
+          return responseJson({ error: "Snapshot not found" }, 404);
+        }
+
+        return new Response(snapshot.raw_json, {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+            "X-Snapshot-Obtained-At": snapshot.checked_at,
+          },
+        });
+      }
+
       const bundleJsonMatch = url.pathname.match(
         /^\/(cf2023|cf2025)\/bundlesdependency\.json$/
       );

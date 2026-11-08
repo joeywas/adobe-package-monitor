@@ -157,8 +157,7 @@ export async function cleanupOldData(env, now = new Date()) {
   const pinnedCf2025 =
     env.CF2025_SNAPSHOT_TIMESTAMP?.trim() || null;
 
-  // Preserve snapshots that are recent, initial, latest,
-  // or explicitly pinned by a Worker environment variable.
+  // Preserve recent, initial, latest, pinned, and recent event snapshots.
   const protectedSnapshot = `
     s.checked_at >= ?
     OR s.id = (
@@ -176,6 +175,14 @@ export async function cleanupOldData(env, now = new Date()) {
       FROM changes c
       WHERE c.version = s.version
         AND c.detected_at = s.checked_at
+        AND c.detected_at IN (
+          SELECT c0.detected_at
+          FROM changes c0
+          WHERE c0.version = s.version
+          GROUP BY c0.detected_at
+          ORDER BY MAX(c0.id) DESC
+          LIMIT 20
+        )
     )
     OR (
       s.version = 'cf2023'
