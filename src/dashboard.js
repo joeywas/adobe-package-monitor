@@ -398,8 +398,9 @@ footer {
 
   <div class="toolbar">
     <span id="message" class="muted message" role="status">
-      Loading change history...
+      Change history has not been loaded.
     </span>
+    <button id="loadChanges" type="button">Load change history</button>
     <button id="clearFilters" type="button">Clear filters</button>
   </div>
 
@@ -419,8 +420,7 @@ footer {
   </div>
 
   <p class="footer-note">
-    The dashboard requests the 20 most recent detection events from the API.
-    Search and filters apply to those records.
+    Search and filters apply to the 20 most recent detection events after they are loaded.
   </p>
 </section>
 
@@ -607,6 +607,8 @@ function addDetailsRow(mainRow, change) {
 
 let allChanges = [];
 let loadInProgress = false;
+let changesLoadInProgress = false;
+let changesLoaded = false;
 let dashboardStatus = null;
 
 const cfVersion = window.location.pathname.startsWith("/cf2025")
@@ -625,6 +627,19 @@ function renderChanges() {
 
   const rows = document.getElementById("rows");
   rows.replaceChildren();
+
+  if (!changesLoaded) {
+    document.getElementById("message").textContent =
+      "Load change history to search and inspect recorded changes.";
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 3;
+    td.className = "empty";
+    td.textContent = "Change history has not been loaded.";
+    tr.appendChild(td);
+    rows.appendChild(tr);
+    return;
+  }
 
   // Apply the existing search and filters to individual changes.
   const filtered = allChanges.filter(function (change) {
@@ -973,25 +988,17 @@ async function load() {
 
   loadInProgress = true;
 
-  document.getElementById("message").textContent =
-    "Loading change history...";
   document.getElementById("checksMessage").textContent =
     "Loading check history...";
 
   try {
-    const changesPath =
-      "/api/changes?version=" + encodeURIComponent(cfVersion) +
-      "&limit=20";
-
     const results = await Promise.all([
       getJson("/api/status?version=" + encodeURIComponent(cfVersion)),
-      getJson(changesPath),
       getJson("/api/checks?version=" + encodeURIComponent(cfVersion))
     ]);
 
     const status = results[0];
-    const changes = results[1];
-    const checks = results[2];
+    const checks = results[1];
     dashboardStatus = status;
 
     document.getElementById("lastCheck").textContent =
@@ -1002,8 +1009,6 @@ async function load() {
     document.getElementById("highestVersion").textContent =
       status.highest_bundle_version || "No version found";
 
-    allChanges = Array.isArray(changes) ? changes : [];
-    renderChanges();
     renderChecks(Array.isArray(checks) ? checks : []);
 
     document.getElementById("lastCheckNote").textContent =
@@ -1020,16 +1025,47 @@ async function load() {
   }
 }
 
+async function loadChanges() {
+  if (changesLoadInProgress) return;
+
+  changesLoadInProgress = true;
+  const button = document.getElementById("loadChanges");
+  button.disabled = true;
+  button.textContent = "Loading...";
+  document.getElementById("message").textContent =
+    "Loading change history...";
+
+  try {
+    const path =
+      "/api/changes?version=" + encodeURIComponent(cfVersion) +
+      "&limit=20";
+    const changes = await getJson(path);
+
+    allChanges = Array.isArray(changes) ? changes : [];
+    changesLoaded = true;
+    renderChanges();
+    button.textContent = "Reload change history";
+  } catch (error) {
+    document.getElementById("message").textContent =
+      "Unable to load change history: " + error.message;
+    button.textContent = "Retry change history";
+  } finally {
+    changesLoadInProgress = false;
+    button.disabled = false;
+  }
+}
+
 document.getElementById("itemType").addEventListener("change", renderChanges);
 document.getElementById("changeType").addEventListener("change", renderChanges);
 
 document.getElementById("search").addEventListener("input", renderChanges);
+document.getElementById("loadChanges").addEventListener("click", loadChanges);
 
 document.getElementById("clearFilters").addEventListener("click", function () {
   document.getElementById("search").value = "";
   document.getElementById("itemType").value = "";
   document.getElementById("changeType").value = "";
-  load();
+  renderChanges();
 });
 
 load();
