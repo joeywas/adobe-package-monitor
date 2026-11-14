@@ -139,7 +139,7 @@ export async function recentChecks(
      FROM check_runs
      WHERE version = ?
      ORDER BY id DESC
-     LIMIT 25`
+      LIMIT 10`
   ).bind(version).all();
 
   return result.results;

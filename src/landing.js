@@ -188,8 +188,6 @@ export function landingPage(releaseVersionLink) {
   </main>
 
   <footer>
-    Timestamps are displayed in UTC (Zulu time).
-    Release ${releaseVersionLink || "unreleased"}.
     <a href="https://github.com/joeywas/adobe-package-monitor" target="_blank" rel="noopener">Source</a>
   </footer>
   <script>
