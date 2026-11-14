@@ -420,7 +420,7 @@ footer {
   </div>
 
   <p class="footer-note">
-    Search and filters apply to the 20 most recent detection events after they are loaded.
+    Search and filters apply to the 10 most recent detection events after they are loaded.
   </p>
 </section>
 
@@ -1038,7 +1038,7 @@ async function loadChanges() {
   try {
     const path =
       "/api/changes?version=" + encodeURIComponent(cfVersion) +
-      "&limit=20";
+      "&limit=10";
     const changes = await getJson(path);
 
     allChanges = Array.isArray(changes) ? changes : [];
