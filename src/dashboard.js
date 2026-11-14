@@ -335,7 +335,7 @@ footer {
   <div>
     <h1>Adobe ColdFusion Bundle Monitor</h1>
     <p class="muted">
-      Times are shown in UTC (Zulu time).<br>
+      Born out of frustration with Adobe's bundledependency.json changing without notice <br>
     </p>
     <hr>
   </div>
